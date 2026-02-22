@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.List;
 
 /**
@@ -103,7 +104,7 @@ public class ClientServlet extends HttpServlet {
         for (int i = 0; i < services.size(); i++) {
             if (i > 0) sb.append(",");
             ServiceSupplementaire s = services.get(i);
-            sb.append(String.format("{\"id\":\"%s\",\"nom\":\"%s\",\"prix\":%.2f}",
+            sb.append(String.format(Locale.US, "{\"id\":\"%s\",\"nom\":\"%s\",\"prix\":%.2f}",
                     s.getId(), s.getNom(), s.getPrix()));
         }
         sb.append("]");
@@ -187,7 +188,7 @@ public class ClientServlet extends HttpServlet {
         reservation.setCoutTotal(coutTotal);
         dao.save(reservation);
 
-        JsonUtil.created(resp, String.format(
+        JsonUtil.created(resp, String.format(Locale.US,
             "{\"message\":\"Réservation créée, en attente de validation\",\"id\":\"%s\",\"coutTotal\":%.2f}",
             id, coutTotal
         ));
@@ -246,7 +247,7 @@ public class ClientServlet extends HttpServlet {
             }
         }
         eq.append("]");
-        return String.format(
+        return String.format(Locale.US,
             "{\"id\":\"%s\",\"nom\":\"%s\",\"capacite\":%d,\"type\":\"%s\"," +
             "\"prixParHeure\":%.2f,\"localisation\":\"%s\",\"equipements\":%s}",
             s.getId(), s.getNom(), s.getCapacite(), s.getType(),
@@ -255,7 +256,7 @@ public class ClientServlet extends HttpServlet {
     }
 
     private String reservationToJson(Reservation r) {
-        return String.format(
+        return String.format(Locale.US,
             "{\"id\":\"%s\",\"salleId\":\"%s\",\"dateDebut\":\"%s\",\"dureeHeures\":%d," +
             "\"nombreParticipants\":%d,\"statut\":\"%s\",\"coutTotal\":%.2f}",
             r.getId(), r.getSalleId(), r.getDateDebut().format(FORMATTER),

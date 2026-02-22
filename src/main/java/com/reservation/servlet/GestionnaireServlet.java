@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.List;
 
 /**
@@ -205,7 +206,7 @@ public class GestionnaireServlet extends HttpServlet {
     }
 
     private String reservationToJson(Reservation r, String nomSalle) {
-        return String.format(
+        return String.format(Locale.US,
             "{\"id\":\"%s\",\"clientId\":\"%s\",\"salleId\":\"%s\",\"nomSalle\":\"%s\"," +
             "\"dateDebut\":\"%s\",\"dateFin\":\"%s\",\"dureeHeures\":%d," +
             "\"nombreParticipants\":%d,\"statut\":\"%s\",\"coutTotal\":%.2f}",

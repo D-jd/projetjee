@@ -7,6 +7,7 @@ import com.reservation.util.JsonUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -305,7 +306,7 @@ public class AdminServlet extends HttpServlet {
         double totalRevenus = ReservationDAO.getInstance().findAll().stream()
                 .filter(r -> r.getStatut() == Reservation.StatutReservation.VALIDEE)
                 .mapToDouble(Reservation::getCoutTotal).sum();
-        JsonUtil.ok(resp, String.format("{\"totalRevenus\":%.2f}", totalRevenus));
+        JsonUtil.ok(resp, String.format(Locale.US, "{\"totalRevenus\":%.2f}", totalRevenus));
     }
 
     private void getRapportClientsActifs(HttpServletResponse resp) throws IOException {
@@ -336,7 +337,7 @@ public class AdminServlet extends HttpServlet {
                     e.getId(), e.getNom(), e.isEnPanne()));
         }
         eq.append("]");
-        return String.format(
+        return String.format(Locale.US,
             "{\"id\":\"%s\",\"nom\":\"%s\",\"capacite\":%d,\"type\":\"%s\",\"prixParHeure\":%.2f," +
             "\"localisation\":\"%s\",\"gestionnaireId\":\"%s\",\"equipements\":%s}",
             s.getId(), s.getNom(), s.getCapacite(), s.getType(), s.getPrixParHeure(),
