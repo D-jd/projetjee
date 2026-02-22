@@ -11,7 +11,7 @@ public class AuthFilter implements Filter {
 
     // Chemins publics (pas besoin d'être connecté)
     private static final String[] PUBLIC_PATHS = {
-        "/", "/login.jsp", "/login", "/register", "/api/auth/login", "/api/auth/register"
+        "/login.jsp", "/login", "/register", "/api/auth/login", "/api/auth/register"
     };
 
     @Override

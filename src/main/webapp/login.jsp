@@ -205,7 +205,8 @@
 </div>
 
 <script>
-    const CTX = '<%= request.getContextPath() %>';
+    // NB: on utilise des URLs relatives (ex: "api/auth/login") pour que ça marche
+    // quel que soit le context-root (ex: /SalleReservation).
 
     function showTab(tab) {
         document.querySelectorAll('.tab').forEach((t, i) => {
@@ -241,22 +242,24 @@
         formData.append('password', password);
 
         try {
-            const res = await fetch(`${CTX}/api/auth/login`, { method: 'POST', body: formData });
-            const data = await res.json();
+            const res = await fetch('api/auth/login', { method: 'POST', body: formData });
+            const text = await res.text();
+            let data = {};
+            try { data = JSON.parse(text); } catch (_) { /* réponse non JSON */ }
 
             if (res.ok) {
-                showAlert('Connexion réussie ! Rôle : ' + data.role, 'success');
+                showAlert('Connexion réussie ! Rôle : ' + (data.role || '?'), 'success');
                 // Redirection selon le rôle (adaptez selon votre structure)
                 setTimeout(() => {
-                    if (data.role === 'ADMIN') window.location.href = `${CTX}/api/admin/salles`;
-                    else if (data.role === 'GESTIONNAIRE') window.location.href = `${CTX}/api/gestionnaire/reservations`;
-                    else window.location.href = `${CTX}/api/client/salles`;
+                    if (data.role === 'ADMIN') window.location.href = 'api/admin/salles';
+                    else if (data.role === 'GESTIONNAIRE') window.location.href = 'api/gestionnaire/reservations';
+                    else window.location.href = 'api/client/salles';
                 }, 1000);
             } else {
-                showAlert(data.error || 'Identifiants incorrects', 'error');
+                showAlert((data.error || text || 'Identifiants incorrects') + ` (HTTP ${res.status})`, 'error');
             }
         } catch (e) {
-            showAlert('Erreur de connexion au serveur', 'error');
+            showAlert('Erreur de connexion au serveur: ' + (e && e.message ? e.message : e), 'error');
         }
     }
 
@@ -280,17 +283,19 @@
         Object.entries(data).forEach(([k, v]) => formData.append(k, v));
 
         try {
-            const res = await fetch(`${CTX}/api/auth/register`, { method: 'POST', body: formData });
-            const result = await res.json();
+            const res = await fetch('api/auth/register', { method: 'POST', body: formData });
+            const text = await res.text();
+            let result = {};
+            try { result = JSON.parse(text); } catch (_) { /* réponse non JSON */ }
 
             if (res.ok) {
                 showAlert('Compte créé avec succès ! Vous pouvez vous connecter.', 'success');
                 setTimeout(() => showTab('login'), 1500);
             } else {
-                showAlert(result.error || 'Erreur lors de la création du compte', 'error');
+                showAlert((result.error || text || 'Erreur lors de la création du compte') + ` (HTTP ${res.status})`, 'error');
             }
         } catch (e) {
-            showAlert('Erreur de connexion au serveur', 'error');
+            showAlert('Erreur de connexion au serveur: ' + (e && e.message ? e.message : e), 'error');
         }
     }
 
