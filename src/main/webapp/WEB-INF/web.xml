@@ -17,14 +17,6 @@
         <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
 
-    <!-- Encodage UTF-8 -->
-    <filter>
-        <filter-name>EncodingFilter</filter-name>
-        <filter-class>com.reservation.filter.EncodingFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>EncodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+    <!-- Encodage UTF-8: géré via l'annotation @WebFilter sur com.reservation.filter.EncodingFilter -->
 
 </web-app>
