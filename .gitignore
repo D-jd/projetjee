@@ -1,0 +1,6 @@
+# Maven
+/target/
+
+# Eclipse / WTP local state (généré)
+.metadata/
+
