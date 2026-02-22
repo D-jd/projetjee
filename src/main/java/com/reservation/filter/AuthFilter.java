@@ -11,7 +11,7 @@ public class AuthFilter implements Filter {
 
     // Chemins publics (pas besoin d'être connecté)
     private static final String[] PUBLIC_PATHS = {
-        "/login", "/register", "/api/auth/login", "/api/auth/register"
+        "/", "/login.jsp", "/login", "/register", "/api/auth/login", "/api/auth/register"
     };
 
     @Override
@@ -21,7 +21,12 @@ public class AuthFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        String path = request.getServletPath();
+        // Ex: /SalleReservation/api/auth/register  ->  /api/auth/register
+        String uri = request.getRequestURI();
+        String ctx = request.getContextPath();
+        String path = (ctx != null && !ctx.isEmpty() && uri.startsWith(ctx))
+                ? uri.substring(ctx.length())
+                : uri;
 
         // Laisser passer les chemins publics
         for (String p : PUBLIC_PATHS) {
@@ -36,9 +41,15 @@ public class AuthFilter implements Filter {
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
         if (user == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"Non authentifié. Veuillez vous connecter.\"}");
+            // API -> JSON, pages -> redirection vers login.jsp
+            if (path.startsWith("/api/")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"error\": \"Non authentifié. Veuillez vous connecter.\"}");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+            }
             return;
         }
 

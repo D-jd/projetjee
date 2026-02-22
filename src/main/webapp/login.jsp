@@ -205,6 +205,8 @@
 </div>
 
 <script>
+    const CTX = '<%= request.getContextPath() %>';
+
     function showTab(tab) {
         document.querySelectorAll('.tab').forEach((t, i) => {
             t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'register' && i === 1));
@@ -239,16 +241,16 @@
         formData.append('password', password);
 
         try {
-            const res = await fetch('/api/auth/login', { method: 'POST', body: formData });
+            const res = await fetch(`${CTX}/api/auth/login`, { method: 'POST', body: formData });
             const data = await res.json();
 
             if (res.ok) {
                 showAlert('Connexion réussie ! Rôle : ' + data.role, 'success');
                 // Redirection selon le rôle (adaptez selon votre structure)
                 setTimeout(() => {
-                    if (data.role === 'ADMIN') window.location.href = '/api/admin/salles';
-                    else if (data.role === 'GESTIONNAIRE') window.location.href = '/api/gestionnaire/reservations';
-                    else window.location.href = '/api/client/salles';
+                    if (data.role === 'ADMIN') window.location.href = `${CTX}/api/admin/salles`;
+                    else if (data.role === 'GESTIONNAIRE') window.location.href = `${CTX}/api/gestionnaire/reservations`;
+                    else window.location.href = `${CTX}/api/client/salles`;
                 }, 1000);
             } else {
                 showAlert(data.error || 'Identifiants incorrects', 'error');
@@ -278,7 +280,7 @@
         Object.entries(data).forEach(([k, v]) => formData.append(k, v));
 
         try {
-            const res = await fetch('/api/auth/register', { method: 'POST', body: formData });
+            const res = await fetch(`${CTX}/api/auth/register`, { method: 'POST', body: formData });
             const result = await res.json();
 
             if (res.ok) {
