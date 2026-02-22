@@ -237,12 +237,16 @@
             return;
         }
 
-        const formData = new FormData();
-        formData.append('username', username);
-        formData.append('password', password);
+        const formBody = new URLSearchParams();
+        formBody.append('username', username);
+        formBody.append('password', password);
 
         try {
-            const res = await fetch('api/auth/login', { method: 'POST', body: formData });
+            const res = await fetch('api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: formBody.toString()
+            });
             const text = await res.text();
             let data = {};
             try { data = JSON.parse(text); } catch (_) { /* réponse non JSON */ }
@@ -279,11 +283,15 @@
             return;
         }
 
-        const formData = new FormData();
-        Object.entries(data).forEach(([k, v]) => formData.append(k, v));
+        const formBody = new URLSearchParams();
+        Object.entries(data).forEach(([k, v]) => formBody.append(k, v));
 
         try {
-            const res = await fetch('api/auth/register', { method: 'POST', body: formData });
+            const res = await fetch('api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: formBody.toString()
+            });
             const text = await res.text();
             let result = {};
             try { result = JSON.parse(text); } catch (_) { /* réponse non JSON */ }
